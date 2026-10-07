@@ -4,117 +4,57 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>一封信</title>
+
 <style>
-  * { margin:0; padding:0; box-sizing:border-box; }
-  html,body {
-    height:100%; overflow:hidden; background:#0d0b0a;
-    font-family: "Songti SC","STSong","Noto Serif SC",serif;
-    -webkit-font-smoothing:antialiased; -webkit-tap-highlight-color:transparent;
-  }
-  body::before { content:''; position:fixed; inset:0; background:radial-gradient(ellipse 65% 55% at 50% 45%, rgba(255,214,160,.075), transparent 70%); pointer-events:none; z-index:0; }
-  #fx { position:fixed; inset:0; width:100%; height:100%; pointer-events:none; z-index:30; }
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-  .creator { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:18px; padding:22px; z-index:100; background:#0d0b0a; overflow-y:auto; }
-  .creator-title { color:#f1e0c1; font-size:22px; letter-spacing:.5em; text-indent:.5em; margin-bottom:6px; }
-  .creator-sub { color:rgba(237,223,199,.4); font-size:13px; letter-spacing:.12em; margin-bottom:8px; }
-  .creator textarea { width:min(560px,90vw); height:min(260px,38vh); resize:none; padding:18px 20px; border-radius:6px; border:1px solid rgba(255,210,150,.18); background:rgba(255,240,215,.04); color:#eddfc7; font-family:inherit; font-size:16px; line-height:1.9; letter-spacing:.05em; outline:none; }
-  .creator textarea:focus { border-color:rgba(255,205,140,.4); background:rgba(255,240,215,.06); }
-  .creator textarea::placeholder { color:rgba(237,223,199,.25); }
-  .creator-row { width:min(560px,90vw); display:flex; align-items:center; justify-content:space-between; font-size:12px; color:rgba(237,223,199,.4); }
-  .creator button { padding:12px 46px; border-radius:999px; border:1px solid rgba(255,205,140,.35); background:transparent; color:#f1e0c1; font-family:inherit; font-size:15px; letter-spacing:.34em; text-indent:.34em; cursor:pointer; transition:all .3s; }
-  .creator button:active { background:rgba(255,205,140,.1); transform:scale(.97); }
+html,body{
+  height:100%;
+  overflow:hidden;
+  background:#0d0b0a;
+  font-family:"Songti SC","STSong","Noto Serif SC",serif;
+  -webkit-font-smoothing:antialiased;
+  -webkit-tap-highlight-color:transparent;
+}
 
-  .envelope-scene { position:fixed; inset:0; display:none; flex-direction:column; align-items:center; justify-content:center; z-index:50; transition:opacity .9s ease, transform .9s ease; }
-  .envelope-scene.on { display:flex; }
-  .envelope-scene.hide { opacity:0; transform:translateY(-80px); pointer-events:none; }
-  .envelope { width:min(260px, 62vw); height:min(175px, 42vw); position:relative; cursor:pointer; perspective:700px; animation:float 3.2s ease-in-out infinite; }
-  @keyframes float { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-9px); } }
-  .env-body { position:absolute; inset:0; background:linear-gradient(160deg,#f7ebd2 0%,#e8d5b0 100%); border-radius:5px; box-shadow:0 24px 50px -14px rgba(0,0,0,.75), 0 0 70px rgba(255,196,120,.09), inset 0 1px 0 rgba(255,255,255,.6); }
-  .env-flap { position:absolute; inset:0; background:linear-gradient(180deg,#e2cfa8 0%,#d4bf92 100%); clip-path:polygon(0 0, 50% 58%, 100% 0); transform-origin:top; transition:transform .9s cubic-bezier(.6,0,.3,1); border-radius:5px 5px 0 0; }
-  .envelope.open .env-flap { transform:rotateX(180deg); }
-  .env-seal { position:absolute; top:50%; left:50%; width:min(46px,11vw); height:min(46px,11vw); transform:translate(-50%,-50%); border-radius:50%; background:radial-gradient(circle at 35% 35%,#d9453a,#a93226); box-shadow:0 4px 14px rgba(0,0,0,.5), inset 0 -2px 6px rgba(0,0,0,.3), inset 0 2px 5px rgba(255,255,255,.2); display:flex; align-items:center; justify-content:center; color:rgba(245,230,200,.85); font-size:min(20px,5vw); transition:opacity .5s, transform .5s; z-index:5; }
-  .envelope.open .env-seal { opacity:0; transform:translate(-50%,-50%) scale(.5); }
-  .env-hint { margin-top:36px; color:rgba(237,223,199,.5); font-size:13px; letter-spacing:.4em; text-indent:.4em; transition:opacity .6s; animation:blink 2.4s ease-in-out infinite; }
-  @keyframes blink { 0%,100% { opacity:.5; } 50% { opacity:.9; } }
-  .envelope-scene.hide .env-hint { opacity:0; }
+body::before{
+  content:'';
+  position:fixed;
+  inset:0;
+  background:radial-gradient(
+    ellipse 65% 55% at 50% 45%,
+    rgba(255,214,160,.075),
+    transparent 70%
+  );
+  pointer-events:none;
+  z-index:0;
+}
 
-  .stage { position:fixed; inset:0; display:flex; align-items:center; justify-content:center; opacity:0; transition:opacity 1s ease; pointer-events:none; z-index:10; }
-  .stage.on { opacity:1; }
-  .paper { width:min(620px,88vw); height:76vh; padding:clamp(28px,5vw,50px) clamp(24px,5vw,46px); overflow-y:auto; overflow-x:hidden; background:radial-gradient(ellipse at 28% 6%,#fffdf8 0%,#f7f0e2 55%,#efe5d2 100%); border-radius:4px; box-shadow:0 40px 90px -24px rgba(0,0,0,.85); color:#3b332a; font-size:clamp(15px,2vw,18px); line-height:2.15; letter-spacing:.055em; text-align:left; transition:opacity 2.2s ease, filter 2.2s ease, transform 2.2s ease; transform:scale(.97); }
-  .stage.on .paper { transform:scale(1); }
-  .paper::-webkit-scrollbar { display:none; }
-  .paper.gone { opacity:0; filter:blur(10px); transform:scale(1.05) translateY(-10px); }
-  #letter { white-space:pre-wrap; word-break:break-word; text-indent:2em; }
-  .hint { position:fixed; left:50%; bottom:7vh; transform:translateX(-50%); color:rgba(237,223,199,.45); font-size:13px; letter-spacing:.28em; text-indent:.28em; opacity:0; transition:opacity 1s; pointer-events:none; z-index:50; }
-  .hint.on { opacity:1; }
-</style>
-</head>
-<body>
+button,textarea{
+  font-family:inherit;
+}
 
-<canvas id="fx"></canvas>
+button{
+  -webkit-tap-highlight-color:transparent;
+}
 
-<div class="creator" id="creator">
-  <div class="creator-title">写一封信</div>
-  <div class="creator-sub">写好后点寄出，即可观看效果</div>
-  <textarea id="creatorInput" placeholder="在这里写下你的信..."></textarea>
-  <div class="creator-row"><span id="charCount">0 字</span></div>
-  <button id="generateBtn">寄 出</button>
-</div>
+#fx{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  z-index:30;
+}
 
-<div class="envelope-scene" id="envelopeScene">
-  <div class="envelope" id="envelope">
-    <div class="env-body"></div><div class="env-flap"></div><div class="env-seal">✉</div>
-  </div>
-  <div class="env-hint">轻触打开</div>
-</div>
+/* =========================
+   写信页面
+========================= */
 
-<div class="stage" id="stage">
-  <div class="paper" id="paper"><div id="letter"></div></div>
-</div>
-
-<div class="hint" id="hint">轻触屏幕 · 再读一遍</div>
-
-<script>
-(function(){
-  var CHAR_DELAY=80, PAUSE_PERIOD=1200, PAUSE_COMMA=500;
-  var creator=document.getElementById('creator'), creatorInput=document.getElementById('creatorInput');
-  var charCount=document.getElementById('charCount'), generateBtn=document.getElementById('generateBtn');
-  var envelopeScene=document.getElementById('envelopeScene'), envelope=document.getElementById('envelope');
-  var stage=document.getElementById('stage'), paper=document.getElementById('paper');
-  var letter=document.getElementById('letter'), hint=document.getElementById('hint');
-  var canvas=document.getElementById('fx'), ctx=canvas.getContext('2d');
-  var W=0,H=0,DPR=1;
-  function resize(){ DPR=Math.min(window.devicePixelRatio||1,2); W=window.innerWidth; H=window.innerHeight; canvas.width=Math.round(W*DPR); canvas.height=Math.round(H*DPR); canvas.style.width=W+'px'; canvas.style.height=H+'px'; ctx.setTransform(DPR,0,0,DPR,0,0); }
-  window.addEventListener('resize',resize); resize();
-
-  var particles=[], rafId=null, lastT=0;
-  var PALETTE=[[255,219,168],[255,199,126],[255,236,208],[250,208,145],[255,244,224]];
-  function particleLoop(t){ var dt=(t-lastT)/16.6667; lastT=t; if(!isFinite(dt)||dt<=0)dt=1; if(dt>2.5)dt=2.5; ctx.clearRect(0,0,W,H); var w=0; for(var i=0;i<particles.length;i++){ var p=particles[i]; p.vx+=(Math.random()-0.5)*0.08*dt; p.vy-=0.012*dt; p.vx*=0.985; p.vy*=0.99; p.x+=(p.vx+Math.sin((p.y+p.seed)*0.03)*0.15)*dt; p.y+=p.vy*dt; p.life-=dt; if(p.life<=0)continue; particles[w++]=p; var a=Math.min(1,p.life/(p.maxLife*0.5))*p.alpha; if(a<=0.01)continue; ctx.globalAlpha=a; ctx.fillStyle=p.color; ctx.fillRect(p.x-p.size/2,p.y-p.size/2,p.size,p.size); } particles.length=w; ctx.globalAlpha=1; rafId=particles.length>0?requestAnimationFrame(particleLoop):null; }
-  function startParticles(){ if(rafId)return; lastT=performance.now(); rafId=requestAnimationFrame(particleLoop); }
-
-  function updateCount(){ var len=creatorInput.value.length; charCount.textContent=len+' 字'; generateBtn.disabled=len===0; }
-  creatorInput.addEventListener('input',updateCount);
-
-  generateBtn.addEventListener('click',function(){
-    var text=creatorInput.value.trim();
-    if(!text)return;
-    creator.style.display='none';
-    envelopeScene.classList.add('on');
-    envelope.classList.remove('open');
-    window._letterText = text;
-  });
-
-  var opening=false, finished=false, timer=null;
-  function openEnvelope(){ if(opening)return; opening=true; envelope.classList.add('open'); setTimeout(function(){ envelopeScene.classList.add('hide'); },700); setTimeout(function(){ stage.classList.add('on'); },1000); setTimeout(function(){ play(window._letterText); },1900); }
-  function play(text){ var i=0,lastScroll=0; function next(){ if(i>=text.length){ setTimeout(dissolve,3000); return; } i++; letter.textContent=text.slice(0,i); if(i-lastScroll>25){ lastScroll=i; if(paper.scrollHeight>paper.clientHeight+4){ paper.scrollTop=paper.scrollHeight; } } var ch=text[i-1]; var wait=CHAR_DELAY; if('。！？!?…'.indexOf(ch)>=0) wait=PAUSE_PERIOD; else if('，,、；;：:'.indexOf(ch)>=0) wait=PAUSE_COMMA; timer=setTimeout(next,wait); } next(); }
-  function dissolve(){ var text=letter.textContent; if(!text){ finish(); return; } var cs=getComputedStyle(letter); var font=cs.fontStyle+' '+cs.fontWeight+' '+cs.fontSize+' '+cs.fontFamily; var lineHeight=parseFloat(cs.lineHeight)||30; var textIndent=parseFloat(cs.textIndent)||0; var mctx=document.createElement('canvas').getContext('2d'); mctx.font=font; var letterRect=letter.getBoundingClientRect(); var paperRect=paper.getBoundingClientRect(); var containerW=letter.clientWidth; var visTop=paperRect.top-letterRect.top; var visBot=paperRect.bottom-letterRect.top; var total=text.length; var xs=new Array(total),ys=new Array(total),ws=new Array(total); var x=textIndent,y=0; for(var i=0;i<total;i++){ var ch=text[i]; if(ch==='\n'){ x=0;y+=lineHeight; xs[i]=x;ys[i]=y;ws[i]=0; continue; } var cw=mctx.measureText(ch).width; if(x+cw>containerW&&x>0){ x=0;y+=lineHeight; } xs[i]=x;ys[i]=y;ws[i]=cw; x+=cw; } var targetCount=550; var step=Math.max(1,Math.floor(total/targetCount)); var baseX=letterRect.left,baseY=letterRect.top; for(var k=0;k<total;k+=step){ var ch2=text[k]; if(!ch2.trim())continue; var py=ys[k]+lineHeight*(0.25+Math.random()*0.6); if(py<visTop-5||py>visBot+5)continue; var px=xs[k]+Math.random()*Math.max(2,ws[k]); var col=PALETTE[(Math.random()*PALETTE.length)|0]; var life=90+Math.random()*110; particles.push({x:baseX+px,y:baseY+py,vx:(Math.random()-0.5)*0.9,vy:-Math.random()*0.75-0.1,life:life,maxLife:life,size:0.9+Math.random()*1.5,alpha:0.75+Math.random()*0.25,seed:Math.random()*1000,color:'rgb('+col[0]+','+col[1]+','+col[2]+')'}); } paper.classList.add('gone'); startParticles(); setTimeout(finish,2600); }
-  function finish(){ hint.classList.add('on'); finished=true; }
-  function reset(){ if(timer){ clearTimeout(timer); timer=null; } if(rafId){ cancelAnimationFrame(rafId); rafId=null; } particles=[]; ctx.clearRect(0,0,W,H); paper.classList.remove('gone'); paper.scrollTop=0; letter.textContent=''; stage.classList.remove('on'); hint.classList.remove('on'); envelopeScene.classList.remove('hide'); envelope.classList.remove('open'); opening=false; finished=false; creator.style.display='flex'; creatorInput.focus(); }
-  
-  envelope.addEventListener('click',function(e){ e.stopPropagation(); openEnvelope(); });
-  document.addEventListener('click',function(){ if(finished) reset(); });
-  updateCount();
-})();
-</script>
-</body>
-</html>
+.creator{
+  position:fixed;
+  inset:
