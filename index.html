@@ -272,7 +272,8 @@
     generateBtn.textContent = '生成中...';
     resultBox.classList.remove('on');
 
-    fetch('https://api.jsonstorage.net/v1/json', {
+    // 替换为 extendsclass 的接口
+    fetch('https://api.extendsclass.com/json-storage/bin', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -437,7 +438,8 @@
       creator.style.display = 'none';
       envelopeScene.classList.add('on');
       
-      fetch('https://api.jsonstorage.net/v1/json/' + id)
+      // 从新接口读取信件
+      fetch('https://api.extendsclass.com/json-storage/bin/' + id)
       .then(function(res){
         if (!res.ok) throw new Error('数据不存在或已过期');
         return res.json();
