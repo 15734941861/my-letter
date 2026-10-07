@@ -102,4 +102,1558 @@ body{
 
 
 .subtitle{
-  margin-bottom:28
+  margin-bottom:28px;
+
+  font-size:13px;
+
+  color:rgba(240,220,190,0.45);
+
+  letter-spacing:0.12em;
+}
+
+
+#letterInput{
+  display:block;
+
+  width:100%;
+  height:260px;
+
+  padding:20px;
+
+  border:
+
+    1px solid
+    rgba(240,200,140,0.22);
+
+  border-radius:10px;
+
+  outline:none;
+
+  resize:none;
+
+  background:
+    rgba(255,245,225,0.045);
+
+  color:#f1dfc3;
+
+  font-family:inherit;
+
+  font-size:16px;
+
+  line-height:1.9;
+}
+
+
+#letterInput::placeholder{
+  color:
+    rgba(240,220,190,0.25);
+}
+
+
+.count{
+  margin-top:10px;
+
+  text-align:left;
+
+  font-size:12px;
+
+  color:
+    rgba(240,220,190,0.38);
+}
+
+
+#sendBtn{
+  margin-top:25px;
+
+  min-width:150px;
+
+  padding:13px 30px;
+
+  border:
+
+    1px solid
+    rgba(240,200,140,0.38);
+
+  border-radius:999px;
+
+  background:
+    rgba(255,235,200,0.04);
+
+  color:#f2dfbd;
+
+  font-family:inherit;
+
+  font-size:15px;
+
+  letter-spacing:0.3em;
+
+  cursor:pointer;
+}
+
+
+#sendBtn:disabled{
+  opacity:0.4;
+}
+
+
+/* =========================
+   加载
+========================= */
+
+#loadingPage{
+  z-index:200;
+
+  align-items:center;
+  justify-content:center;
+
+  color:
+    rgba(240,220,190,0.55);
+
+  font-size:14px;
+
+  letter-spacing:0.25em;
+}
+
+
+/* =========================
+   分享页面
+========================= */
+
+#sharePage{
+  z-index:300;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:24px;
+}
+
+
+.share-box{
+  width:100%;
+  max-width:500px;
+
+  text-align:center;
+}
+
+
+.share-icon{
+  display:flex;
+
+  width:66px;
+  height:66px;
+
+  margin:
+    0 auto
+    22px;
+
+  align-items:center;
+  justify-content:center;
+
+  border:
+
+    1px solid
+    rgba(240,200,140,0.25);
+
+  border-radius:50%;
+
+  font-size:28px;
+}
+
+
+.share-title{
+  margin-bottom:12px;
+
+  font-size:22px;
+
+  letter-spacing:0.18em;
+}
+
+
+.share-description{
+  margin-bottom:22px;
+
+  color:
+    rgba(240,220,190,0.48);
+
+  font-size:13px;
+
+  line-height:1.8;
+}
+
+
+#shareURL{
+  width:100%;
+
+  margin-bottom:18px;
+
+  padding:14px;
+
+  border:
+
+    1px solid
+    rgba(240,200,140,0.15);
+
+  border-radius:8px;
+
+  background:
+    rgba(255,245,225,0.04);
+
+  color:
+    rgba(240,220,190,0.7);
+
+  text-align:left;
+
+  font-family:Arial,sans-serif;
+
+  font-size:11px;
+
+  line-height:1.5;
+
+  word-break:break-all;
+}
+
+
+.share-button{
+  width:100%;
+  height:48px;
+
+  margin-bottom:11px;
+
+  border:
+
+    1px solid
+    rgba(240,200,140,0.32);
+
+  border-radius:999px;
+
+  background:
+    rgba(255,235,200,0.055);
+
+  color:#f2dfbd;
+
+  font-family:inherit;
+
+  font-size:14px;
+}
+
+
+.two-buttons{
+  display:flex;
+
+  gap:10px;
+}
+
+
+.two-buttons button{
+  flex:1;
+}
+
+
+.secondary{
+  height:44px;
+
+  border:
+
+    1px solid
+    rgba(240,200,140,0.18);
+
+  border-radius:999px;
+
+  background:transparent;
+
+  color:
+    rgba(242,223,189,0.75);
+
+  font-family:inherit;
+}
+
+
+#againBtn{
+  margin-top:17px;
+
+  border:none;
+
+  background:transparent;
+
+  color:
+    rgba(240,220,190,0.42);
+
+  font-family:inherit;
+}
+
+
+#shareStatus{
+  height:25px;
+
+  margin-top:12px;
+
+  color:
+    rgba(240,220,190,0.55);
+
+  font-size:12px;
+}
+
+
+/* =========================
+   信封页面
+========================= */
+
+#envelopePage{
+  z-index:400;
+
+  align-items:center;
+  justify-content:center;
+
+  flex-direction:column;
+}
+
+
+.envelope{
+  position:relative;
+
+  width:260px;
+  max-width:68vw;
+
+  aspect-ratio:1.5 / 1;
+
+  cursor:pointer;
+
+  animation:
+    floatEnvelope
+    3s
+    ease-in-out
+    infinite;
+}
+
+
+@keyframes floatEnvelope{
+
+  0%,
+  100%{
+    transform:translateY(0);
+  }
+
+  50%{
+    transform:translateY(-9px);
+  }
+
+}
+
+
+.envelope-body{
+  position:absolute;
+
+  inset:0;
+
+  border-radius:6px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #f7ead0,
+      #e5d0a8
+    );
+
+  box-shadow:
+
+    0 25px 55px
+    rgba(0,0,0,0.55);
+}
+
+
+.envelope-flap{
+  position:absolute;
+
+  inset:0;
+
+  background:
+    linear-gradient(
+      #e8d4ae,
+      #d3bc90
+    );
+
+  clip-path:
+    polygon(
+      0 0,
+      50% 58%,
+      100% 0
+    );
+
+  transform-origin:top;
+
+  transition:
+    transform 0.8s ease;
+}
+
+
+.envelope.open
+.envelope-flap{
+  transform:
+    rotateX(180deg);
+}
+
+
+.seal{
+  position:absolute;
+
+  top:50%;
+  left:50%;
+
+  z-index:10;
+
+  display:flex;
+
+  width:48px;
+  height:48px;
+
+  align-items:center;
+  justify-content:center;
+
+  transform:
+    translate(-50%,-50%);
+
+  border-radius:50%;
+
+  background:
+    radial-gradient(
+      circle at 35% 30%,
+      #df5144,
+      #9f2c23
+    );
+
+  box-shadow:
+
+    0 5px 14px
+    rgba(0,0,0,0.45);
+
+  color:#f8e7c9;
+
+  font-size:20px;
+
+  transition:
+    opacity 0.5s,
+    transform 0.5s;
+}
+
+
+.envelope.open
+.seal{
+  opacity:0;
+
+  transform:
+    translate(-50%,-50%)
+    scale(0.5);
+}
+
+
+.open-tip{
+  margin-top:34px;
+
+  color:
+    rgba(240,220,190,0.52);
+
+  font-size:13px;
+
+  letter-spacing:0.35em;
+
+  text-indent:0.35em;
+}
+
+
+/* =========================
+   信件页面
+========================= */
+
+#readPage{
+  z-index:500;
+
+  align-items:center;
+  justify-content:center;
+
+  padding:22px;
+}
+
+
+.paper{
+  width:100%;
+  max-width:620px;
+
+  height:76vh;
+
+  overflow:auto;
+
+  padding:
+    40px
+    34px;
+
+  border-radius:5px;
+
+  background:
+
+    radial-gradient(
+      circle at 25% 5%,
+      #fffef9,
+      #f6eedf 60%,
+      #eadfc9
+    );
+
+  box-shadow:
+
+    0 35px 80px
+    rgba(0,0,0,0.7);
+
+  color:#3d342a;
+
+  font-size:17px;
+
+  line-height:2.1;
+
+  letter-spacing:0.05em;
+
+  transition:
+    opacity 1.8s ease,
+    transform 1.8s ease,
+    filter 1.8s ease;
+}
+
+
+.paper.disappear{
+  opacity:0;
+
+  transform:
+    translateY(-15px)
+    scale(1.04);
+
+  filter:
+    blur(9px);
+}
+
+
+#letterText{
+  white-space:pre-wrap;
+
+  word-break:break-word;
+}
+
+
+#replayTip{
+  position:fixed;
+
+  bottom:7vh;
+  left:50%;
+
+  z-index:600;
+
+  display:none;
+
+  transform:
+    translateX(-50%);
+
+  color:
+    rgba(240,220,190,0.5);
+
+  font-size:12px;
+
+  letter-spacing:0.2em;
+
+  white-space:nowrap;
+}
+
+
+/* 手机 */
+
+@media(max-width:600px){
+
+  #letterInput{
+    height:230px;
+  }
+
+  .paper{
+    height:72vh;
+
+    padding:
+      32px
+      25px;
+
+    font-size:16px;
+  }
+
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- 写信 -->
+
+<div
+  class="page"
+  id="writePage"
+>
+
+  <div class="write-box">
+
+    <h1 class="title">
+      写一封信
+    </h1>
+
+    <div class="subtitle">
+      有些话，适合慢一点说
+    </div>
+
+    <textarea
+      id="letterInput"
+      maxlength="10000"
+      placeholder="在这里写下你的信..."
+    ></textarea>
+
+    <div
+      class="count"
+      id="count"
+    >
+      0 字
+    </div>
+
+    <button
+      id="sendBtn"
+      disabled
+    >
+      寄 出
+    </button>
+
+  </div>
+
+</div>
+
+
+<!-- 加载 -->
+
+<div
+  class="page"
+  id="loadingPage"
+>
+  正在取信…
+</div>
+
+
+<!-- 分享 -->
+
+<div
+  class="page"
+  id="sharePage"
+>
+
+  <div class="share-box">
+
+    <div class="share-icon">
+      ✉
+    </div>
+
+    <div class="share-title">
+      信已经封好了
+    </div>
+
+    <div class="share-description">
+      把下面的链接发送给对方<br>
+      对方打开后会直接看到信封
+    </div>
+
+    <div id="shareURL">
+    </div>
+
+    <button
+      class="share-button"
+      id="copyBtn"
+    >
+      复制分享链接
+    </button>
+
+    <div class="two-buttons">
+
+      <button
+        class="secondary"
+        id="systemShareBtn"
+      >
+        分享给朋友
+      </button>
+
+      <button
+        class="secondary"
+        id="previewBtn"
+      >
+        预览这封信
+      </button>
+
+    </div>
+
+    <button id="againBtn">
+      再写一封
+    </button>
+
+    <div id="shareStatus">
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- 信封 -->
+
+<div
+  class="page"
+  id="envelopePage"
+>
+
+  <div
+    class="envelope"
+    id="envelope"
+  >
+
+    <div class="envelope-body">
+    </div>
+
+    <div class="envelope-flap">
+    </div>
+
+    <div class="seal">
+      ✉
+    </div>
+
+  </div>
+
+  <div class="open-tip">
+    轻触打开
+  </div>
+
+</div>
+
+
+<!-- 信纸 -->
+
+<div
+  class="page"
+  id="readPage"
+>
+
+  <div
+    class="paper"
+    id="paper"
+  >
+
+    <div id="letterText">
+    </div>
+
+  </div>
+
+</div>
+
+
+<div id="replayTip">
+  轻触屏幕 · 再读一遍
+</div>
+
+
+<script>
+
+/* =========================
+   后端地址
+========================= */
+
+const API =
+  "https://my-letter-api.226043950.workers.dev";
+
+
+/* =========================
+   获取元素
+========================= */
+
+const writePage =
+  document.getElementById("writePage");
+
+const loadingPage =
+  document.getElementById("loadingPage");
+
+const sharePage =
+  document.getElementById("sharePage");
+
+const envelopePage =
+  document.getElementById("envelopePage");
+
+const readPage =
+  document.getElementById("readPage");
+
+
+const input =
+  document.getElementById("letterInput");
+
+const count =
+  document.getElementById("count");
+
+const sendBtn =
+  document.getElementById("sendBtn");
+
+
+const shareURL =
+  document.getElementById("shareURL");
+
+const copyBtn =
+  document.getElementById("copyBtn");
+
+const systemShareBtn =
+  document.getElementById("systemShareBtn");
+
+const previewBtn =
+  document.getElementById("previewBtn");
+
+const againBtn =
+  document.getElementById("againBtn");
+
+const shareStatus =
+  document.getElementById("shareStatus");
+
+
+const envelope =
+  document.getElementById("envelope");
+
+const paper =
+  document.getElementById("paper");
+
+const letterTextBox =
+  document.getElementById("letterText");
+
+const replayTip =
+  document.getElementById("replayTip");
+
+
+/* =========================
+   状态
+========================= */
+
+let currentText = "";
+
+let currentURL = "";
+
+let typingTimer = null;
+
+let finished = false;
+
+let opening = false;
+
+
+/* =========================
+   页面切换
+========================= */
+
+function hideAll(){
+
+  writePage.style.display =
+    "none";
+
+  loadingPage.style.display =
+    "none";
+
+  sharePage.style.display =
+    "none";
+
+  envelopePage.style.display =
+    "none";
+
+  readPage.style.display =
+    "none";
+
+}
+
+
+function showWrite(){
+
+  hideAll();
+
+  writePage.style.display =
+    "flex";
+
+}
+
+
+function showLoading(){
+
+  hideAll();
+
+  loadingPage.style.display =
+    "flex";
+
+}
+
+
+function showShare(){
+
+  hideAll();
+
+  sharePage.style.display =
+    "flex";
+
+}
+
+
+function showEnvelope(){
+
+  hideAll();
+
+  opening = false;
+
+  finished = false;
+
+  envelope.classList.remove(
+    "open"
+  );
+
+  paper.classList.remove(
+    "disappear"
+  );
+
+  letterTextBox.textContent =
+    "";
+
+  replayTip.style.display =
+    "none";
+
+  envelopePage.style.display =
+    "flex";
+
+}
+
+
+/* =========================
+   输入
+========================= */
+
+input.addEventListener(
+  "input",
+  function(){
+
+    const length =
+      input.value.length;
+
+    count.textContent =
+      length + " 字";
+
+    sendBtn.disabled =
+      length === 0;
+
+  }
+);
+
+
+/* =========================
+   寄信
+========================= */
+
+sendBtn.addEventListener(
+  "click",
+  async function(){
+
+    const text =
+      input.value.trim();
+
+    if(!text){
+      return;
+    }
+
+
+    sendBtn.disabled = true;
+
+    sendBtn.textContent =
+      "寄送中…";
+
+
+    try{
+
+      const response =
+        await fetch(
+          API + "/letter",
+          {
+
+            method:"POST",
+
+            headers:{
+              "Content-Type":
+                "application/json"
+            },
+
+            body:
+              JSON.stringify({
+                text:text
+              })
+
+          }
+        );
+
+
+      const data =
+        await response.json();
+
+
+      if(
+        !response.ok ||
+        !data.id
+      ){
+
+        throw new Error(
+          data.error ||
+          "创建失败"
+        );
+
+      }
+
+
+      currentText =
+        text;
+
+
+      currentURL =
+        window.location.origin +
+        window.location.pathname +
+        "?id=" +
+        encodeURIComponent(
+          data.id
+        );
+
+
+      shareURL.textContent =
+        currentURL;
+
+
+      showShare();
+
+
+    }catch(error){
+
+      alert(
+        "寄信失败：" +
+        error.message
+      );
+
+    }
+
+
+    sendBtn.textContent =
+      "寄 出";
+
+    sendBtn.disabled =
+      input.value.length === 0;
+
+  }
+);
+
+
+/* =========================
+   复制链接
+========================= */
+
+async function copyLink(){
+
+  if(!currentURL){
+    return;
+  }
+
+
+  try{
+
+    await navigator.clipboard
+      .writeText(currentURL);
+
+    shareStatus.textContent =
+      "✓ 链接已复制";
+
+
+  }catch(error){
+
+
+    const temp =
+      document.createElement(
+        "textarea"
+      );
+
+
+    temp.value =
+      currentURL;
+
+
+    temp.style.position =
+      "fixed";
+
+    temp.style.left =
+      "-9999px";
+
+
+    document.body.appendChild(
+      temp
+    );
+
+
+    temp.select();
+
+
+    try{
+
+      document.execCommand(
+        "copy"
+      );
+
+      shareStatus.textContent =
+        "✓ 链接已复制";
+
+    }catch(e){
+
+      shareStatus.textContent =
+        "请长按上方链接复制";
+
+    }
+
+
+    temp.remove();
+
+  }
+
+}
+
+
+copyBtn.addEventListener(
+  "click",
+  copyLink
+);
+
+
+/* =========================
+   手机系统分享
+========================= */
+
+systemShareBtn.addEventListener(
+  "click",
+  async function(){
+
+
+    if(!currentURL){
+      return;
+    }
+
+
+    if(navigator.share){
+
+      try{
+
+        await navigator.share({
+
+          title:"一封信",
+
+          text:
+            "有一封信想给你。",
+
+          url:
+            currentURL
+
+        });
+
+      }catch(error){
+
+        /* 用户取消分享时
+           什么都不用做 */
+
+      }
+
+
+    }else{
+
+      await copyLink();
+
+      shareStatus.textContent =
+        "链接已复制，可以直接发送";
+
+    }
+
+  }
+);
+
+
+/* =========================
+   预览
+========================= */
+
+previewBtn.addEventListener(
+  "click",
+  function(){
+
+    showEnvelope();
+
+  }
+);
+
+
+/* =========================
+   再写一封
+========================= */
+
+againBtn.addEventListener(
+  "click",
+  function(){
+
+    history.replaceState(
+      null,
+      "",
+      window.location.pathname
+    );
+
+
+    currentText = "";
+
+    currentURL = "";
+
+    input.value = "";
+
+    count.textContent =
+      "0 字";
+
+    sendBtn.disabled =
+      true;
+
+    shareStatus.textContent =
+      "";
+
+
+    showWrite();
+
+  }
+);
+
+
+/* =========================
+   打开收到的信
+========================= */
+
+async function loadSharedLetter(){
+
+  const params =
+    new URLSearchParams(
+      window.location.search
+    );
+
+
+  const id =
+    params.get("id");
+
+
+  /* 没有 id
+     就正常显示写信首页 */
+
+  if(!id){
+
+    showWrite();
+
+    return;
+
+  }
+
+
+  showLoading();
+
+
+  try{
+
+    const response =
+      await fetch(
+        API +
+        "/letter/" +
+        encodeURIComponent(id)
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if(
+      !response.ok ||
+      typeof data.text !== "string"
+    ){
+
+      throw new Error(
+        data.error ||
+        "读取失败"
+      );
+
+    }
+
+
+    currentText =
+      data.text;
+
+
+    showEnvelope();
+
+
+  }catch(error){
+
+
+    alert(
+      "这封信无法打开：" +
+      error.message
+    );
+
+
+    history.replaceState(
+      null,
+      "",
+      window.location.pathname
+    );
+
+
+    showWrite();
+
+  }
+
+}
+
+
+/* =========================
+   点击信封
+========================= */
+
+envelope.addEventListener(
+  "click",
+  function(){
+
+    if(
+      opening ||
+      !currentText
+    ){
+      return;
+    }
+
+
+    opening = true;
+
+
+    envelope.classList.add(
+      "open"
+    );
+
+
+    setTimeout(
+      function(){
+
+        hideAll();
+
+        readPage.style.display =
+          "flex";
+
+        startTyping();
+
+      },
+      900
+    );
+
+  }
+);
+
+
+/* =========================
+   打字机
+========================= */
+
+function startTyping(){
+
+  if(typingTimer){
+
+    clearTimeout(
+      typingTimer
+    );
+
+  }
+
+
+  letterTextBox.textContent =
+    "";
+
+  paper.classList.remove(
+    "disappear"
+  );
+
+  paper.scrollTop = 0;
+
+  finished = false;
+
+
+  let index = 0;
+
+
+  function typeNext(){
+
+
+    if(
+      index >=
+      currentText.length
+    ){
+
+      typingTimer =
+        setTimeout(
+          fadeLetter,
+          3000
+        );
+
+      return;
+
+    }
+
+
+    const char =
+      currentText[index];
+
+
+    index++;
+
+
+    letterTextBox.textContent =
+      currentText.slice(
+        0,
+        index
+      );
+
+
+    if(
+      paper.scrollHeight >
+      paper.clientHeight
+    ){
+
+      paper.scrollTop =
+        paper.scrollHeight;
+
+    }
+
+
+    let delay = 75;
+
+
+    if(
+      "。！？!?…".includes(
+        char
+      )
+    ){
+
+      delay = 800;
+
+    }
+
+    else if(
+      "，、；：,;:"
+      .includes(char)
+    ){
+
+      delay = 300;
+
+    }
+
+
+    typingTimer =
+      setTimeout(
+        typeNext,
+        delay
+      );
+
+  }
+
+
+  typeNext();
+
+}
+
+
+/* =========================
+   信纸消失
+========================= */
+
+function fadeLetter(){
+
+  paper.classList.add(
+    "disappear"
+  );
+
+
+  setTimeout(
+    function(){
+
+      finished = true;
+
+      replayTip.style.display =
+        "block";
+
+    },
+    1900
+  );
+
+}
+
+
+/* =========================
+   再读一遍
+========================= */
+
+document.addEventListener(
+  "click",
+  function(event){
+
+    if(!finished){
+      return;
+    }
+
+
+    /* 防止点击按钮时触发 */
+
+    if(
+      event.target.tagName ===
+      "BUTTON"
+    ){
+      return;
+    }
+
+
+    if(typingTimer){
+
+      clearTimeout(
+        typingTimer
+      );
+
+    }
+
+
+    finished = false;
+
+    showEnvelope();
+
+  }
+);
+
+
+/* =========================
+   最重要：
+   页面加载完成后才初始化
+========================= */
+
+window.addEventListener(
+  "load",
+  function(){
+
+    loadSharedLetter();
+
+  }
+);
+
+</script>
+
+</body>
+
+</html>
