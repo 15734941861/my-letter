@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "outputDirectory": ".",
+  "rewrites": [
+    {
+      "source": "/.well-known/datai-verify",
+      "destination": "/public/.well-known/datai-verify"
+    }
+  ]
+}
