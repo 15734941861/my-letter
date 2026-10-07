@@ -27,6 +27,8 @@ body{
 
 body{
   min-height:100vh;
+  overflow:hidden;
+
   background:
     radial-gradient(
       circle at 50% 45%,
@@ -59,6 +61,25 @@ body{
   display:none;
 
   overflow:auto;
+}
+
+
+/* =========================
+   粒子画布
+========================= */
+
+#particleCanvas{
+  position:fixed;
+
+  top:0;
+  left:0;
+
+  width:100%;
+  height:100%;
+
+  z-index:550;
+
+  pointer-events:none;
 }
 
 
@@ -121,7 +142,6 @@ body{
   padding:20px;
 
   border:
-
     1px solid
     rgba(240,200,140,0.22);
 
@@ -170,7 +190,6 @@ body{
   padding:13px 30px;
 
   border:
-
     1px solid
     rgba(240,200,140,0.38);
 
@@ -243,15 +262,12 @@ body{
   width:66px;
   height:66px;
 
-  margin:
-    0 auto
-    22px;
+  margin:0 auto 22px;
 
   align-items:center;
   justify-content:center;
 
   border:
-
     1px solid
     rgba(240,200,140,0.25);
 
@@ -290,7 +306,6 @@ body{
   padding:14px;
 
   border:
-
     1px solid
     rgba(240,200,140,0.15);
 
@@ -321,7 +336,6 @@ body{
   margin-bottom:11px;
 
   border:
-
     1px solid
     rgba(240,200,140,0.32);
 
@@ -340,7 +354,6 @@ body{
 
 .two-buttons{
   display:flex;
-
   gap:10px;
 }
 
@@ -354,7 +367,6 @@ body{
   height:44px;
 
   border:
-
     1px solid
     rgba(240,200,140,0.18);
 
@@ -396,7 +408,7 @@ body{
 
 
 /* =========================
-   信封页面
+   信封
 ========================= */
 
 #envelopePage{
@@ -418,6 +430,8 @@ body{
   aspect-ratio:1.5 / 1;
 
   cursor:pointer;
+
+  perspective:700px;
 
   animation:
     floatEnvelope
@@ -456,7 +470,6 @@ body{
     );
 
   box-shadow:
-
     0 25px 55px
     rgba(0,0,0,0.55);
 }
@@ -487,10 +500,8 @@ body{
 }
 
 
-.envelope.open
-.envelope-flap{
-  transform:
-    rotateX(180deg);
+.envelope.open .envelope-flap{
+  transform:rotateX(180deg);
 }
 
 
@@ -523,7 +534,6 @@ body{
     );
 
   box-shadow:
-
     0 5px 14px
     rgba(0,0,0,0.45);
 
@@ -537,8 +547,7 @@ body{
 }
 
 
-.envelope.open
-.seal{
+.envelope.open .seal{
   opacity:0;
 
   transform:
@@ -562,7 +571,7 @@ body{
 
 
 /* =========================
-   信件页面
+   信纸
 ========================= */
 
 #readPage{
@@ -590,7 +599,6 @@ body{
   border-radius:5px;
 
   background:
-
     radial-gradient(
       circle at 25% 5%,
       #fffef9,
@@ -599,7 +607,6 @@ body{
     );
 
   box-shadow:
-
     0 35px 80px
     rgba(0,0,0,0.7);
 
@@ -610,6 +617,12 @@ body{
   line-height:2.1;
 
   letter-spacing:0.05em;
+
+  opacity:1;
+
+  transform:scale(1);
+
+  filter:blur(0);
 
   transition:
     opacity 1.8s ease,
@@ -622,11 +635,10 @@ body{
   opacity:0;
 
   transform:
-    translateY(-15px)
-    scale(1.04);
+    translateY(-14px)
+    scale(1.035);
 
-  filter:
-    blur(9px);
+  filter:blur(7px);
 }
 
 
@@ -636,6 +648,10 @@ body{
   word-break:break-word;
 }
 
+
+/* =========================
+   再读提示
+========================= */
 
 #replayTip{
   position:fixed;
@@ -661,8 +677,6 @@ body{
 }
 
 
-/* 手机 */
-
 @media(max-width:600px){
 
   #letterInput{
@@ -682,19 +696,19 @@ body{
 }
 
 </style>
-
 </head>
 
 
 <body>
 
 
+<!-- 粒子 -->
+<canvas id="particleCanvas"></canvas>
+
+
 <!-- 写信 -->
 
-<div
-  class="page"
-  id="writePage"
->
+<div class="page" id="writePage">
 
   <div class="write-box">
 
@@ -763,8 +777,7 @@ body{
       对方打开后会直接看到信封
     </div>
 
-    <div id="shareURL">
-    </div>
+    <div id="shareURL"></div>
 
     <button
       class="share-button"
@@ -795,8 +808,7 @@ body{
       再写一封
     </button>
 
-    <div id="shareStatus">
-    </div>
+    <div id="shareStatus"></div>
 
   </div>
 
@@ -815,11 +827,9 @@ body{
     id="envelope"
   >
 
-    <div class="envelope-body">
-    </div>
+    <div class="envelope-body"></div>
 
-    <div class="envelope-flap">
-    </div>
+    <div class="envelope-flap"></div>
 
     <div class="seal">
       ✉
@@ -834,7 +844,7 @@ body{
 </div>
 
 
-<!-- 信纸 -->
+<!-- 阅读 -->
 
 <div
   class="page"
@@ -846,8 +856,7 @@ body{
     id="paper"
   >
 
-    <div id="letterText">
-    </div>
+    <div id="letterText"></div>
 
   </div>
 
@@ -862,7 +871,7 @@ body{
 <script>
 
 /* =========================
-   后端地址
+   Cloudflare Worker
 ========================= */
 
 const API =
@@ -870,7 +879,7 @@ const API =
 
 
 /* =========================
-   获取元素
+   DOM
 ========================= */
 
 const writePage =
@@ -932,6 +941,79 @@ const replayTip =
 
 
 /* =========================
+   粒子 Canvas
+========================= */
+
+const canvas =
+  document.getElementById(
+    "particleCanvas"
+  );
+
+const ctx =
+  canvas.getContext("2d");
+
+
+let canvasWidth = 0;
+
+let canvasHeight = 0;
+
+let dpr = 1;
+
+
+function resizeCanvas(){
+
+  dpr =
+    Math.min(
+      window.devicePixelRatio || 1,
+      2
+    );
+
+  canvasWidth =
+    window.innerWidth;
+
+  canvasHeight =
+    window.innerHeight;
+
+
+  canvas.width =
+    Math.round(
+      canvasWidth * dpr
+    );
+
+  canvas.height =
+    Math.round(
+      canvasHeight * dpr
+    );
+
+
+  canvas.style.width =
+    canvasWidth + "px";
+
+  canvas.style.height =
+    canvasHeight + "px";
+
+
+  ctx.setTransform(
+    dpr,
+    0,
+    0,
+    dpr,
+    0,
+    0
+  );
+
+}
+
+
+resizeCanvas();
+
+window.addEventListener(
+  "resize",
+  resizeCanvas
+);
+
+
+/* =========================
    状态
 ========================= */
 
@@ -944,6 +1026,15 @@ let typingTimer = null;
 let finished = false;
 
 let opening = false;
+
+
+/* 粒子 */
+
+let particles = [];
+
+let particleAnimation = null;
+
+let particleLastTime = 0;
 
 
 /* =========================
@@ -1004,23 +1095,33 @@ function showEnvelope(){
 
   hideAll();
 
+  stopParticles();
+
   opening = false;
 
   finished = false;
+
 
   envelope.classList.remove(
     "open"
   );
 
+
   paper.classList.remove(
     "disappear"
   );
 
+
   letterTextBox.textContent =
     "";
 
+
+  paper.scrollTop = 0;
+
+
   replayTip.style.display =
     "none";
+
 
   envelopePage.style.display =
     "flex";
@@ -1039,8 +1140,10 @@ input.addEventListener(
     const length =
       input.value.length;
 
+
     count.textContent =
       length + " 字";
+
 
     sendBtn.disabled =
       length === 0;
@@ -1060,12 +1163,15 @@ sendBtn.addEventListener(
     const text =
       input.value.trim();
 
+
     if(!text){
       return;
     }
 
 
-    sendBtn.disabled = true;
+    sendBtn.disabled =
+      true;
+
 
     sendBtn.textContent =
       "寄送中…";
@@ -1144,6 +1250,7 @@ sendBtn.addEventListener(
     sendBtn.textContent =
       "寄 出";
 
+
     sendBtn.disabled =
       input.value.length === 0;
 
@@ -1152,7 +1259,7 @@ sendBtn.addEventListener(
 
 
 /* =========================
-   复制链接
+   复制
 ========================= */
 
 async function copyLink(){
@@ -1166,6 +1273,7 @@ async function copyLink(){
 
     await navigator.clipboard
       .writeText(currentURL);
+
 
     shareStatus.textContent =
       "✓ 链接已复制";
@@ -1205,8 +1313,10 @@ async function copyLink(){
         "copy"
       );
 
+
       shareStatus.textContent =
         "✓ 链接已复制";
+
 
     }catch(e){
 
@@ -1230,13 +1340,12 @@ copyBtn.addEventListener(
 
 
 /* =========================
-   手机系统分享
+   系统分享
 ========================= */
 
 systemShareBtn.addEventListener(
   "click",
   async function(){
-
 
     if(!currentURL){
       return;
@@ -1259,17 +1368,14 @@ systemShareBtn.addEventListener(
 
         });
 
-      }catch(error){
+      }catch(error){}
 
-        /* 用户取消分享时
-           什么都不用做 */
+    }
 
-      }
-
-
-    }else{
+    else{
 
       await copyLink();
+
 
       shareStatus.textContent =
         "链接已复制，可以直接发送";
@@ -1313,13 +1419,17 @@ againBtn.addEventListener(
 
     currentURL = "";
 
+
     input.value = "";
+
 
     count.textContent =
       "0 字";
 
+
     sendBtn.disabled =
       true;
+
 
     shareStatus.textContent =
       "";
@@ -1332,7 +1442,7 @@ againBtn.addEventListener(
 
 
 /* =========================
-   打开收到的信
+   读取分享信件
 ========================= */
 
 async function loadSharedLetter(){
@@ -1346,9 +1456,6 @@ async function loadSharedLetter(){
   const id =
     params.get("id");
 
-
-  /* 没有 id
-     就正常显示写信首页 */
 
   if(!id){
 
@@ -1398,7 +1505,6 @@ async function loadSharedLetter(){
 
   }catch(error){
 
-
     alert(
       "这封信无法打开：" +
       error.message
@@ -1420,7 +1526,7 @@ async function loadSharedLetter(){
 
 
 /* =========================
-   点击信封
+   打开信封
 ========================= */
 
 envelope.addEventListener(
@@ -1448,8 +1554,10 @@ envelope.addEventListener(
 
         hideAll();
 
+
         readPage.style.display =
           "flex";
+
 
         startTyping();
 
@@ -1476,19 +1584,28 @@ function startTyping(){
   }
 
 
+  stopParticles();
+
+
   letterTextBox.textContent =
     "";
+
 
   paper.classList.remove(
     "disappear"
   );
 
-  paper.scrollTop = 0;
 
-  finished = false;
+  paper.scrollTop =
+    0;
 
 
-  let index = 0;
+  finished =
+    false;
+
+
+  let index =
+    0;
 
 
   function typeNext(){
@@ -1499,11 +1616,17 @@ function startTyping(){
       currentText.length
     ){
 
+      /*
+       * 最后一个字出现后
+       * 精确等待 3 秒
+       */
+
       typingTimer =
         setTimeout(
-          fadeLetter,
+          startDissolve,
           3000
         );
+
 
       return;
 
@@ -1535,16 +1658,17 @@ function startTyping(){
     }
 
 
-    let delay = 75;
+    let delay =
+      75;
 
 
     if(
-      "。！？!?…".includes(
-        char
-      )
+      "。！？!?…"
+      .includes(char)
     ){
 
-      delay = 800;
+      delay =
+        800;
 
     }
 
@@ -1553,7 +1677,8 @@ function startTyping(){
       .includes(char)
     ){
 
-      delay = 300;
+      delay =
+        300;
 
     }
 
@@ -1573,27 +1698,378 @@ function startTyping(){
 
 
 /* =========================
-   信纸消失
+   创建消散粒子
 ========================= */
 
-function fadeLetter(){
+function createParticles(){
+
+  particles = [];
+
+
+  const rect =
+    paper.getBoundingClientRect();
+
+
+  /*
+   * 手机性能优先：
+   * 约 300 个粒子。
+   */
+
+  const amount =
+    Math.min(
+      360,
+      Math.max(
+        180,
+        Math.floor(
+          currentText.length * 2.2
+        )
+      )
+    );
+
+
+  const colors = [
+
+    "rgba(255,236,200,1)",
+
+    "rgba(245,211,157,1)",
+
+    "rgba(226,186,126,1)",
+
+    "rgba(255,222,172,1)",
+
+    "rgba(238,202,147,1)"
+
+  ];
+
+
+  for(
+    let i = 0;
+    i < amount;
+    i++
+  ){
+
+    /*
+     * 粒子主要从信纸区域产生
+     */
+
+    const x =
+      rect.left +
+      Math.random() *
+      rect.width;
+
+
+    const y =
+      rect.top +
+      Math.random() *
+      rect.height;
+
+
+    const life =
+      1100 +
+      Math.random() *
+      1300;
+
+
+    particles.push({
+
+      x:x,
+
+      y:y,
+
+      vx:
+        (Math.random() - 0.5) *
+        0.65,
+
+      vy:
+        -0.15 -
+        Math.random() *
+        0.65,
+
+      size:
+        0.8 +
+        Math.random() *
+        1.8,
+
+      life:life,
+
+      maxLife:life,
+
+      alpha:
+        0.45 +
+        Math.random() *
+        0.5,
+
+      color:
+        colors[
+          Math.floor(
+            Math.random() *
+            colors.length
+          )
+        ]
+
+    });
+
+  }
+
+}
+
+
+/* =========================
+   粒子动画
+========================= */
+
+function animateParticles(time){
+
+  if(
+    !particleLastTime
+  ){
+
+    particleLastTime =
+      time;
+
+  }
+
+
+  let delta =
+    time -
+    particleLastTime;
+
+
+  particleLastTime =
+    time;
+
+
+  /*
+   * 防止切后台后
+   * delta 突然特别大
+   */
+
+  if(delta > 40){
+    delta = 40;
+  }
+
+
+  ctx.clearRect(
+    0,
+    0,
+    canvasWidth,
+    canvasHeight
+  );
+
+
+  let alive =
+    0;
+
+
+  for(
+    let i = 0;
+    i < particles.length;
+    i++
+  ){
+
+    const p =
+      particles[i];
+
+
+    p.life -=
+      delta;
+
+
+    if(
+      p.life <= 0
+    ){
+      continue;
+    }
+
+
+    alive++;
+
+
+    /*
+     * 轻微随机漂移
+     */
+
+    p.vx +=
+      (Math.random() - 0.5) *
+      0.012;
+
+
+    /*
+     * 缓慢向上
+     */
+
+    p.vy -=
+      0.0008 *
+      delta;
+
+
+    p.x +=
+      p.vx *
+      delta *
+      0.06;
+
+
+    p.y +=
+      p.vy *
+      delta *
+      0.06;
+
+
+    /*
+     * 越到后面越透明
+     */
+
+    const progress =
+      p.life /
+      p.maxLife;
+
+
+    const alpha =
+      p.alpha *
+      Math.min(
+        1,
+        progress * 1.8
+      );
+
+
+    ctx.globalAlpha =
+      alpha;
+
+
+    ctx.fillStyle =
+      p.color;
+
+
+    ctx.beginPath();
+
+
+    ctx.arc(
+      p.x,
+      p.y,
+      p.size,
+      0,
+      Math.PI * 2
+    );
+
+
+    ctx.fill();
+
+  }
+
+
+  ctx.globalAlpha =
+    1;
+
+
+  if(alive > 0){
+
+    particleAnimation =
+      requestAnimationFrame(
+        animateParticles
+      );
+
+  }
+
+  else{
+
+    /*
+     * 所有粒子消失
+     */
+
+    stopParticles();
+
+
+    finishLetter();
+
+  }
+
+}
+
+
+/* =========================
+   开始消散
+========================= */
+
+function startDissolve(){
+
+  /*
+   * 先生成粒子
+   */
+
+  createParticles();
+
+
+  /*
+   * 信纸与粒子同时开始消散
+   */
 
   paper.classList.add(
     "disappear"
   );
 
 
-  setTimeout(
-    function(){
+  particleLastTime =
+    0;
 
-      finished = true;
 
-      replayTip.style.display =
-        "block";
+  particleAnimation =
+    requestAnimationFrame(
+      animateParticles
+    );
 
-    },
-    1900
+}
+
+
+/* =========================
+   停止粒子
+========================= */
+
+function stopParticles(){
+
+  if(
+    particleAnimation
+  ){
+
+    cancelAnimationFrame(
+      particleAnimation
+    );
+
+    particleAnimation =
+      null;
+
+  }
+
+
+  particles =
+    [];
+
+
+  particleLastTime =
+    0;
+
+
+  ctx.clearRect(
+    0,
+    0,
+    canvasWidth,
+    canvasHeight
   );
+
+}
+
+
+/* =========================
+   消散结束
+========================= */
+
+function finishLetter(){
+
+  finished =
+    true;
+
+
+  replayTip.style.display =
+    "block";
 
 }
 
@@ -1610,8 +2086,6 @@ document.addEventListener(
       return;
     }
 
-
-    /* 防止点击按钮时触发 */
 
     if(
       event.target.tagName ===
@@ -1630,7 +2104,9 @@ document.addEventListener(
     }
 
 
-    finished = false;
+    finished =
+      false;
+
 
     showEnvelope();
 
@@ -1639,8 +2115,7 @@ document.addEventListener(
 
 
 /* =========================
-   最重要：
-   页面加载完成后才初始化
+   初始化
 ========================= */
 
 window.addEventListener(
@@ -1655,5 +2130,4 @@ window.addEventListener(
 </script>
 
 </body>
-
-</html>
+  </html>
