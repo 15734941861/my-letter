@@ -6,13 +6,10 @@
 <title>一封信</title>
 
 <style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 html,body{
+  width:100%;
   height:100%;
   overflow:hidden;
   background:#0d0b0a;
@@ -22,7 +19,7 @@ html,body{
 }
 
 body::before{
-  content:'';
+  content:"";
   position:fixed;
   inset:0;
   background:radial-gradient(
@@ -31,15 +28,6 @@ body::before{
     transparent 70%
   );
   pointer-events:none;
-  z-index:0;
-}
-
-button,textarea{
-  font-family:inherit;
-}
-
-button{
-  -webkit-tap-highlight-color:transparent;
 }
 
 #fx{
@@ -51,10 +39,79 @@ button{
   z-index:30;
 }
 
-/* =========================
-   写信页面
-========================= */
-
+/* 写信页 */
 .creator{
   position:fixed;
-  inset:
+  inset:0;
+  z-index:100;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:18px;
+  padding:22px;
+  background:#0d0b0a;
+}
+
+.creator-title{
+  color:#f1e0c1;
+  font-size:22px;
+  letter-spacing:.5em;
+  text-indent:.5em;
+}
+
+.creator-sub{
+  color:rgba(237,223,199,.42);
+  font-size:13px;
+  letter-spacing:.1em;
+  text-align:center;
+}
+
+textarea{
+  width:min(560px,90vw);
+  height:min(260px,38vh);
+  resize:none;
+  padding:18px 20px;
+  border-radius:6px;
+  border:1px solid rgba(255,210,150,.18);
+  background:rgba(255,240,215,.04);
+  color:#eddfc7;
+  font-family:inherit;
+  font-size:16px;
+  line-height:1.9;
+  outline:none;
+}
+
+textarea:focus{
+  border-color:rgba(255,205,140,.4);
+}
+
+textarea::placeholder{
+  color:rgba(237,223,199,.25);
+}
+
+.creator-row{
+  width:min(560px,90vw);
+  color:rgba(237,223,199,.4);
+  font-size:12px;
+}
+
+.main-btn{
+  padding:12px 46px;
+  border-radius:999px;
+  border:1px solid rgba(255,205,140,.35);
+  background:transparent;
+  color:#f1e0c1;
+  font-family:inherit;
+  font-size:15px;
+  letter-spacing:.3em;
+}
+
+.main-btn:disabled{
+  opacity:.4;
+}
+
+/* 加载页 */
+.loading{
+  position:fixed;
+ 
