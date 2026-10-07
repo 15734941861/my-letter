@@ -1,117 +1,105 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
+
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, viewport-fit=cover"
+>
+
 <title>一封信</title>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
 
-html,body{
+*{
+  box-sizing:border-box;
+  margin:0;
+  padding:0;
+}
+
+html,
+body{
+  width:100%;
+  min-height:100%;
+}
+
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(
+      circle at 50% 45%,
+      #1b1714 0%,
+      #100e0c 45%,
+      #090807 100%
+    );
+
+  color:#eee0c8;
+
+  font-family:
+    "Songti SC",
+    "STSong",
+    serif;
+}
+
+
+/* =========================
+   通用页面
+========================= */
+
+.page{
+  position:fixed;
+  top:0;
+  left:0;
+
   width:100%;
   height:100%;
-  overflow:hidden;
-  background:#0d0b0a;
-  font-family:"Songti SC","STSong","Noto Serif SC",serif;
-  -webkit-font-smoothing:antialiased;
-  -webkit-tap-highlight-color:transparent;
+
+  display:none;
+
+  overflow:auto;
 }
 
-body::before{
-  content:"";
-  position:fixed;
-  inset:0;
-  background:radial-gradient(
-    ellipse 65% 55% at 50% 45%,
-    rgba(255,214,160,.075),
-    transparent 70%
-  );
-  pointer-events:none;
-}
 
-#fx{
-  position:fixed;
-  inset:0;
-  width:100%;
-  height:100%;
-  pointer-events:none;
-  z-index:30;
-}
+/* =========================
+   写信首页
+========================= */
 
-/* 写信页 */
-.creator{
-  position:fixed;
-  inset:0;
-  z-index:100;
+#writePage{
   display:flex;
-  flex-direction:column;
+
+  z-index:100;
+
   align-items:center;
   justify-content:center;
-  gap:18px;
-  padding:22px;
-  background:#0d0b0a;
+
+  padding:24px;
 }
 
-.creator-title{
-  color:#f1e0c1;
-  font-size:22px;
-  letter-spacing:.5em;
-  text-indent:.5em;
-}
 
-.creator-sub{
-  color:rgba(237,223,199,.42);
-  font-size:13px;
-  letter-spacing:.1em;
+.write-box{
+  width:100%;
+  max-width:560px;
+
   text-align:center;
 }
 
-textarea{
-  width:min(560px,90vw);
-  height:min(260px,38vh);
-  resize:none;
-  padding:18px 20px;
-  border-radius:6px;
-  border:1px solid rgba(255,210,150,.18);
-  background:rgba(255,240,215,.04);
-  color:#eddfc7;
-  font-family:inherit;
-  font-size:16px;
-  line-height:1.9;
-  outline:none;
+
+.title{
+  margin-bottom:14px;
+
+  font-size:24px;
+
+  font-weight:400;
+
+  letter-spacing:0.45em;
+
+  text-indent:0.45em;
+
+  color:#f2dfbd;
 }
 
-textarea:focus{
-  border-color:rgba(255,205,140,.4);
-}
 
-textarea::placeholder{
-  color:rgba(237,223,199,.25);
-}
-
-.creator-row{
-  width:min(560px,90vw);
-  color:rgba(237,223,199,.4);
-  font-size:12px;
-}
-
-.main-btn{
-  padding:12px 46px;
-  border-radius:999px;
-  border:1px solid rgba(255,205,140,.35);
-  background:transparent;
-  color:#f1e0c1;
-  font-family:inherit;
-  font-size:15px;
-  letter-spacing:.3em;
-}
-
-.main-btn:disabled{
-  opacity:.4;
-}
-
-/* 加载页 */
-.loading{
-  position:fixed;
- 
+.subtitle{
+  margin-bottom:28
