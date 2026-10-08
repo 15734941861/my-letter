@@ -874,8 +874,19 @@ body{
    Cloudflare Worker
 ========================= */
 
+const hostname =
+  window.location.hostname;
+
+
+const usesVercelProxy =
+  hostname.endsWith(".webdatai.top") ||
+  hostname.endsWith(".vercel.app");
+
+
 const API =
-  "https://my-letter-api.226043950.workers.dev";
+  usesVercelProxy
+    ? "/api"
+    : "https://my-letter-api.226043950.workers.dev";
 
 
 /* =========================

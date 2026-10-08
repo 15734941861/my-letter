@@ -5,6 +5,10 @@
     {
       "source": "/.well-known/datai-verify",
       "destination": "/public/.well-known/datai-verify"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://my-letter-api.226043950.workers.dev/:path*"
     }
   ]
 }
