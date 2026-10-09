@@ -311,8 +311,41 @@ body{
 }
 
 
+.media-picker-control{
+  position:relative;
+
+  display:inline-flex;
+}
+
+
 #mediaInput{
-  display:none;
+  position:absolute;
+
+  inset:0;
+
+  z-index:2;
+
+  width:100%;
+  height:100%;
+
+  opacity:0;
+
+  cursor:pointer;
+}
+
+
+#mediaInput:disabled{
+  cursor:not-allowed;
+}
+
+
+#mediaInput:focus-visible +
+.media-picker-button{
+  outline:
+    2px solid
+    rgba(240,200,140,0.58);
+
+  outline-offset:3px;
 }
 
 
@@ -1101,20 +1134,25 @@ body{
 
     <div class="media-picker">
 
-      <input
-        id="mediaInput"
-        type="file"
-        accept="image/jpeg,image/png,image/webp,image/gif,audio/mpeg,audio/mp4,audio/aac,audio/wav,audio/webm,video/mp4,video/webm"
-        multiple
-      >
+      <div class="media-picker-control">
 
-      <label
-        class="media-picker-button"
-        id="mediaPickerButton"
-        for="mediaInput"
-      >
-        ＋ 添加图片、语音或视频
-      </label>
+        <input
+          id="mediaInput"
+          type="file"
+          aria-label="添加图片、语音或视频"
+          accept="image/jpeg,image/png,image/webp,image/gif,audio/mpeg,audio/mp4,audio/aac,audio/wav,audio/webm,video/mp4,video/webm"
+          multiple
+        >
+
+        <span
+          class="media-picker-button"
+          id="mediaPickerButton"
+          aria-hidden="true"
+        >
+          ＋ 添加图片、语音或视频
+        </span>
+
+      </div>
 
       <div class="media-hint">
         图片最多6张 · 语音1条 · 视频1个 · 总计不超过40 MB
