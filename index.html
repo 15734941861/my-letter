@@ -216,6 +216,198 @@ body{
 
 
 /* =========================
+   附件选择
+========================= */
+
+.media-picker{
+  margin-top:16px;
+
+  text-align:left;
+}
+
+
+#mediaInput{
+  display:none;
+}
+
+
+.media-picker-button{
+  display:inline-flex;
+
+  min-height:38px;
+
+  padding:8px 15px;
+
+  align-items:center;
+  justify-content:center;
+
+  border:
+    1px solid
+    rgba(240,200,140,0.2);
+
+  border-radius:999px;
+
+  background:
+    rgba(255,245,225,0.035);
+
+  color:
+    rgba(242,223,189,0.82);
+
+  font-size:12px;
+
+  cursor:pointer;
+}
+
+
+.media-picker-button.disabled{
+  opacity:0.4;
+
+  pointer-events:none;
+}
+
+
+.media-hint{
+  margin-top:8px;
+
+  color:
+    rgba(240,220,190,0.34);
+
+  font-size:11px;
+
+  line-height:1.6;
+}
+
+
+.selected-media-list{
+  display:grid;
+
+  margin-top:12px;
+
+  gap:8px;
+}
+
+
+.selected-media-item{
+  display:flex;
+
+  min-width:0;
+
+  padding:9px 11px;
+
+  align-items:center;
+
+  gap:10px;
+
+  border:
+    1px solid
+    rgba(240,200,140,0.13);
+
+  border-radius:8px;
+
+  background:
+    rgba(255,245,225,0.025);
+}
+
+
+.selected-media-thumb{
+  width:42px;
+  height:42px;
+
+  flex:0 0 42px;
+
+  border-radius:6px;
+
+  object-fit:cover;
+
+  background:
+    rgba(255,245,225,0.05);
+}
+
+
+.selected-media-icon{
+  display:flex;
+
+  width:42px;
+  height:42px;
+
+  flex:0 0 42px;
+
+  align-items:center;
+  justify-content:center;
+
+  border-radius:6px;
+
+  background:
+    rgba(255,245,225,0.05);
+
+  font-size:18px;
+}
+
+
+.selected-media-info{
+  min-width:0;
+
+  flex:1;
+}
+
+
+.selected-media-name{
+  overflow:hidden;
+
+  color:
+    rgba(242,223,189,0.76);
+
+  font-size:12px;
+
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+
+.selected-media-size{
+  margin-top:3px;
+
+  color:
+    rgba(240,220,190,0.35);
+
+  font-family:Arial,sans-serif;
+
+  font-size:10px;
+}
+
+
+.remove-media-button{
+  width:30px;
+  height:30px;
+
+  flex:0 0 30px;
+
+  border:none;
+
+  border-radius:50%;
+
+  background:transparent;
+
+  color:
+    rgba(242,223,189,0.5);
+
+  cursor:pointer;
+}
+
+
+#uploadStatus{
+  min-height:18px;
+
+  margin-top:8px;
+
+  color:
+    rgba(240,220,190,0.55);
+
+  font-size:11px;
+}
+
+
+/* =========================
    加载
 ========================= */
 
@@ -649,6 +841,95 @@ body{
 }
 
 
+#letterMedia{
+  display:none;
+
+  margin-top:28px;
+
+  padding-top:24px;
+
+  border-top:
+    1px solid
+    rgba(61,52,42,0.14);
+}
+
+
+#letterMedia.visible{
+  display:grid;
+
+  gap:16px;
+}
+
+
+.letter-media-label{
+  color:
+    rgba(61,52,42,0.58);
+
+  font-size:12px;
+
+  letter-spacing:0.15em;
+}
+
+
+.letter-media-image,
+.letter-media-video{
+  display:block;
+
+  width:100%;
+
+  max-height:58vh;
+
+  border-radius:8px;
+
+  background:#171411;
+
+  object-fit:contain;
+}
+
+
+.letter-media-audio{
+  display:block;
+
+  width:100%;
+}
+
+
+.letter-media-name{
+  overflow:hidden;
+
+  color:
+    rgba(61,52,42,0.48);
+
+  font-family:Arial,sans-serif;
+
+  font-size:10px;
+
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
+
+.read-again-button{
+  min-height:40px;
+
+  margin-top:8px;
+
+  border:
+    1px solid
+    rgba(61,52,42,0.2);
+
+  border-radius:999px;
+
+  background:transparent;
+
+  color:#594b3c;
+
+  font-family:inherit;
+
+  cursor:pointer;
+}
+
+
 /* =========================
    再读提示
 ========================= */
@@ -731,6 +1012,36 @@ body{
       id="count"
     >
       0 字
+    </div>
+
+    <div class="media-picker">
+
+      <input
+        id="mediaInput"
+        type="file"
+        accept="image/jpeg,image/png,image/webp,image/gif,audio/mpeg,audio/mp4,audio/aac,audio/wav,audio/webm,video/mp4,video/webm"
+        multiple
+      >
+
+      <label
+        class="media-picker-button"
+        id="mediaPickerButton"
+        for="mediaInput"
+      >
+        ＋ 添加图片、语音或视频
+      </label>
+
+      <div class="media-hint">
+        图片最多6张 · 语音1条 · 视频1个 · 总计不超过40 MB
+      </div>
+
+      <div
+        class="selected-media-list"
+        id="selectedMediaList"
+      ></div>
+
+      <div id="uploadStatus"></div>
+
     </div>
 
     <button
@@ -858,6 +1169,8 @@ body{
 
     <div id="letterText"></div>
 
+    <div id="letterMedia"></div>
+
   </div>
 
 </div>
@@ -919,6 +1232,19 @@ const sendBtn =
   document.getElementById("sendBtn");
 
 
+const mediaInput =
+  document.getElementById("mediaInput");
+
+const mediaPickerButton =
+  document.getElementById("mediaPickerButton");
+
+const selectedMediaList =
+  document.getElementById("selectedMediaList");
+
+const uploadStatus =
+  document.getElementById("uploadStatus");
+
+
 const shareURL =
   document.getElementById("shareURL");
 
@@ -946,6 +1272,9 @@ const paper =
 
 const letterTextBox =
   document.getElementById("letterText");
+
+const letterMedia =
+  document.getElementById("letterMedia");
 
 const replayTip =
   document.getElementById("replayTip");
@@ -1031,6 +1360,12 @@ window.addEventListener(
 let currentText = "";
 
 let currentURL = "";
+
+let selectedMedia = [];
+
+let currentAttachments = [];
+
+let sending = false;
 
 let typingTimer = null;
 
@@ -1127,6 +1462,13 @@ function showEnvelope(){
     "";
 
 
+  letterMedia.replaceChildren();
+
+  letterMedia.classList.remove(
+    "visible"
+  );
+
+
   paper.scrollTop = 0;
 
 
@@ -1136,6 +1478,481 @@ function showEnvelope(){
 
   envelopePage.style.display =
     "flex";
+
+}
+
+
+/* =========================
+   附件
+========================= */
+
+const clientMediaRules = {
+  "image/jpeg": { category:"image", maxBytes:5 * 1024 * 1024 },
+  "image/png": { category:"image", maxBytes:5 * 1024 * 1024 },
+  "image/webp": { category:"image", maxBytes:5 * 1024 * 1024 },
+  "image/gif": { category:"image", maxBytes:5 * 1024 * 1024 },
+  "audio/mpeg": { category:"audio", maxBytes:15 * 1024 * 1024 },
+  "audio/mp4": { category:"audio", maxBytes:15 * 1024 * 1024 },
+  "audio/aac": { category:"audio", maxBytes:15 * 1024 * 1024 },
+  "audio/wav": { category:"audio", maxBytes:15 * 1024 * 1024 },
+  "audio/webm": { category:"audio", maxBytes:15 * 1024 * 1024 },
+  "video/mp4": { category:"video", maxBytes:30 * 1024 * 1024 },
+  "video/webm": { category:"video", maxBytes:30 * 1024 * 1024 }
+};
+
+
+const clientCategoryLimits = {
+  image:6,
+  audio:1,
+  video:1
+};
+
+
+function formatFileSize(bytes){
+
+  if(bytes < 1024 * 1024){
+    return Math.max(1, Math.round(bytes / 1024)) + " KB";
+  }
+
+  return (bytes / 1024 / 1024).toFixed(1) + " MB";
+
+}
+
+
+function clearSelectedMedia(){
+
+  selectedMedia.forEach(
+    function(item){
+
+      if(item.previewURL){
+        URL.revokeObjectURL(item.previewURL);
+      }
+
+    }
+  );
+
+  selectedMedia = [];
+
+  mediaInput.value = "";
+
+  renderSelectedMedia();
+
+}
+
+
+function renderSelectedMedia(){
+
+  selectedMediaList.replaceChildren();
+
+  selectedMedia.forEach(
+    function(item, index){
+
+      const row =
+        document.createElement("div");
+
+      row.className =
+        "selected-media-item";
+
+
+      if(item.rule.category === "image"){
+
+        const image =
+          document.createElement("img");
+
+        image.className =
+          "selected-media-thumb";
+
+        image.src =
+          item.previewURL;
+
+        image.alt = "";
+
+        row.appendChild(image);
+
+      }
+
+      else{
+
+        const icon =
+          document.createElement("div");
+
+        icon.className =
+          "selected-media-icon";
+
+        icon.textContent =
+          item.rule.category === "audio"
+            ? "♫"
+            : "▶";
+
+        row.appendChild(icon);
+
+      }
+
+
+      const info =
+        document.createElement("div");
+
+      info.className =
+        "selected-media-info";
+
+
+      const name =
+        document.createElement("div");
+
+      name.className =
+        "selected-media-name";
+
+      name.textContent =
+        item.file.name;
+
+
+      const size =
+        document.createElement("div");
+
+      size.className =
+        "selected-media-size";
+
+      size.textContent =
+        formatFileSize(item.file.size);
+
+
+      const remove =
+        document.createElement("button");
+
+      remove.className =
+        "remove-media-button";
+
+      remove.type = "button";
+
+      remove.textContent = "×";
+
+      remove.setAttribute(
+        "aria-label",
+        "移除 " + item.file.name
+      );
+
+      remove.disabled = sending;
+
+      remove.addEventListener(
+        "click",
+        function(){
+
+          const removed =
+            selectedMedia.splice(index, 1)[0];
+
+          if(removed.previewURL){
+            URL.revokeObjectURL(
+              removed.previewURL
+            );
+          }
+
+          renderSelectedMedia();
+
+        }
+      );
+
+
+      info.appendChild(name);
+
+      info.appendChild(size);
+
+      row.appendChild(info);
+
+      row.appendChild(remove);
+
+      selectedMediaList.appendChild(row);
+
+    }
+  );
+
+}
+
+
+function addSelectedFiles(files){
+
+  const next =
+    selectedMedia.slice();
+
+
+  for(const file of files){
+
+    const rule =
+      clientMediaRules[file.type];
+
+    if(!rule){
+      alert("不支持这个文件格式：" + file.name);
+      continue;
+    }
+
+    if(file.size <= 0){
+      alert("文件内容为空：" + file.name);
+      continue;
+    }
+
+    if(file.size > rule.maxBytes){
+      alert("文件过大：" + file.name);
+      continue;
+    }
+
+    const categoryCount =
+      next.filter(
+        item => item.rule.category === rule.category
+      ).length;
+
+    if(categoryCount >= clientCategoryLimits[rule.category]){
+      alert("该类型附件数量已达上限");
+      continue;
+    }
+
+    const totalBytes =
+      next.reduce(
+        (total, item) => total + item.file.size,
+        0
+      ) + file.size;
+
+    if(totalBytes > 40 * 1024 * 1024){
+      alert("单封信附件总大小不能超过40 MB");
+      continue;
+    }
+
+    next.push({
+      file:file,
+      rule:rule,
+      previewURL:
+        rule.category === "image"
+          ? URL.createObjectURL(file)
+          : ""
+    });
+
+  }
+
+
+  selectedMedia = next;
+
+  mediaInput.value = "";
+
+  renderSelectedMedia();
+
+}
+
+
+mediaInput.addEventListener(
+  "change",
+  function(){
+
+    addSelectedFiles(
+      Array.from(mediaInput.files || [])
+    );
+
+  }
+);
+
+
+async function uploadSelectedMedia(letterId, uploadToken){
+
+  const uploaded = [];
+
+
+  for(
+    let index = 0;
+    index < selectedMedia.length;
+    index++
+  ){
+
+    const item =
+      selectedMedia[index];
+
+    uploadStatus.textContent =
+      "正在上传附件 " +
+      (index + 1) +
+      " / " +
+      selectedMedia.length;
+
+
+    const response =
+      await fetch(
+        API +
+        "/letter/" +
+        encodeURIComponent(letterId) +
+        "/media",
+        {
+          method:"POST",
+          headers:{
+            "Content-Type":
+              item.file.type,
+            "X-Upload-Token":
+              uploadToken,
+            "X-File-Name":
+              encodeURIComponent(
+                item.file.name
+              )
+          },
+          body:item.file
+        }
+      );
+
+
+    const data =
+      await response.json();
+
+
+    if(!response.ok || !data.attachment){
+      const error =
+        new Error(
+          data.error || "附件上传失败"
+        );
+
+      error.uploaded = uploaded;
+
+      throw error;
+    }
+
+
+    uploaded.push(
+      data.attachment
+    );
+
+  }
+
+
+  return uploaded;
+
+}
+
+
+function attachmentURL(path){
+
+  if(path.startsWith("/")){
+    return API + path;
+  }
+
+  return path;
+
+}
+
+
+function renderLetterMedia(){
+
+  letterMedia.replaceChildren();
+
+
+  if(!currentAttachments.length){
+    letterMedia.classList.remove("visible");
+    return;
+  }
+
+
+  const label =
+    document.createElement("div");
+
+  label.className =
+    "letter-media-label";
+
+  label.textContent =
+    "信里还放着这些";
+
+  letterMedia.appendChild(label);
+
+
+  currentAttachments.forEach(
+    function(attachment){
+
+      const source =
+        attachmentURL(attachment.url);
+
+      let media;
+
+
+      if(attachment.type === "image"){
+
+        media =
+          document.createElement("img");
+
+        media.className =
+          "letter-media-image";
+
+        media.loading = "lazy";
+
+        media.alt =
+          attachment.name || "信件图片";
+
+      }
+
+      else if(attachment.type === "audio"){
+
+        media =
+          document.createElement("audio");
+
+        media.className =
+          "letter-media-audio";
+
+        media.controls = true;
+
+        media.preload = "metadata";
+
+      }
+
+      else if(attachment.type === "video"){
+
+        media =
+          document.createElement("video");
+
+        media.className =
+          "letter-media-video";
+
+        media.controls = true;
+
+        media.preload = "metadata";
+
+        media.playsInline = true;
+
+      }
+
+
+      if(!media){
+        return;
+      }
+
+
+      media.src = source;
+
+      letterMedia.appendChild(media);
+
+
+      const name =
+        document.createElement("div");
+
+      name.className =
+        "letter-media-name";
+
+      name.textContent =
+        attachment.name || "附件";
+
+      letterMedia.appendChild(name);
+
+    }
+  );
+
+
+  const readAgain =
+    document.createElement("button");
+
+  readAgain.className =
+    "read-again-button";
+
+  readAgain.type = "button";
+
+  readAgain.textContent =
+    "再读一遍";
+
+  readAgain.addEventListener(
+    "click",
+    showEnvelope
+  );
+
+  letterMedia.appendChild(readAgain);
+
+  letterMedia.classList.add("visible");
 
 }
 
@@ -1180,8 +1997,18 @@ sendBtn.addEventListener(
     }
 
 
-    sendBtn.disabled =
-      true;
+    sending = true;
+
+
+    sendBtn.disabled = true;
+
+    mediaInput.disabled = true;
+
+    mediaPickerButton.classList.add(
+      "disabled"
+    );
+
+    renderSelectedMedia();
 
 
     sendBtn.textContent =
@@ -1204,7 +2031,9 @@ sendBtn.addEventListener(
 
             body:
               JSON.stringify({
-                text:text
+                text:text,
+                wantsMedia:
+                  selectedMedia.length > 0
               })
 
           }
@@ -1232,6 +2061,46 @@ sendBtn.addEventListener(
         text;
 
 
+      currentAttachments = [];
+
+
+      let uploadWarning = "";
+
+
+      if(selectedMedia.length > 0){
+
+        if(!data.uploadToken){
+          throw new Error(
+            "服务器没有返回附件上传授权"
+          );
+        }
+
+
+        try{
+
+          currentAttachments =
+            await uploadSelectedMedia(
+              data.id,
+              data.uploadToken
+            );
+
+          uploadStatus.textContent =
+            "附件上传完成";
+
+        }catch(uploadError){
+
+          currentAttachments =
+            uploadError.uploaded || [];
+
+          uploadWarning =
+            "信件文字已寄出，但部分附件未能上传：" +
+            uploadError.message;
+
+        }
+
+      }
+
+
       currentURL =
         window.location.origin +
         window.location.pathname +
@@ -1248,6 +2117,16 @@ sendBtn.addEventListener(
       showShare();
 
 
+      if(uploadWarning){
+
+        shareStatus.textContent =
+          "部分附件上传失败，文字信仍可正常打开";
+
+        alert(uploadWarning);
+
+      }
+
+
     }catch(error){
 
       alert(
@@ -1258,8 +2137,18 @@ sendBtn.addEventListener(
     }
 
 
-    sendBtn.textContent =
-      "寄 出";
+    sending = false;
+
+    mediaInput.disabled = false;
+
+    mediaPickerButton.classList.remove(
+      "disabled"
+    );
+
+    renderSelectedMedia();
+
+
+    sendBtn.textContent = "寄 出";
 
 
     sendBtn.disabled =
@@ -1430,6 +2319,14 @@ againBtn.addEventListener(
 
     currentURL = "";
 
+    currentAttachments = [];
+
+
+    clearSelectedMedia();
+
+
+    uploadStatus.textContent = "";
+
 
     input.value = "";
 
@@ -1509,6 +2406,18 @@ async function loadSharedLetter(){
 
     currentText =
       data.text;
+
+
+    currentAttachments =
+      Array.isArray(data.attachments)
+        ? data.attachments.filter(
+            attachment =>
+              attachment &&
+              typeof attachment.url === "string" &&
+              ["image", "audio", "video"]
+                .includes(attachment.type)
+          )
+        : [];
 
 
     showEnvelope();
@@ -1626,6 +2535,19 @@ function startTyping(){
       index >=
       currentText.length
     ){
+
+
+      if(currentAttachments.length > 0){
+
+        renderLetterMedia();
+
+        paper.scrollTop =
+          paper.scrollHeight;
+
+        return;
+
+      }
+
 
       /*
        * 最后一个字出现后

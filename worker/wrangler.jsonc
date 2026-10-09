@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "my-letter-api",
+  "main": "src/index.js",
+  "compatibility_date": "2026-10-07",
+  "kv_namespaces": [
+    {
+      "binding": "LETTERS",
+      "id": "ff208549d4b849eeaf31cf5bf635072f"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "MEDIA",
+      "bucket_name": "my-letter-media"
+    }
+  ]
+}

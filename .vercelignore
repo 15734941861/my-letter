@@ -1,4 +1,3 @@
-.vercel
-.env*
+worker/
 .wrangler/
 .dev.vars*
