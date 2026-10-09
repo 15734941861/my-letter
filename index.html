@@ -311,6 +311,17 @@ body{
 }
 
 
+.media-picker-actions{
+  display:flex;
+
+  flex-wrap:wrap;
+
+  align-items:center;
+
+  gap:8px;
+}
+
+
 .media-picker-control{
   position:relative;
 
@@ -381,6 +392,72 @@ body{
   opacity:0.4;
 
   pointer-events:none;
+}
+
+
+.voice-record-button{
+  display:inline-flex;
+
+  min-height:38px;
+
+  padding:8px 15px;
+
+  align-items:center;
+  justify-content:center;
+
+  border:
+    1px solid
+    rgba(240,200,140,0.2);
+
+  border-radius:999px;
+
+  background:
+    rgba(255,245,225,0.035);
+
+  color:
+    rgba(242,223,189,0.82);
+
+  font-family:inherit;
+
+  font-size:12px;
+
+  cursor:pointer;
+
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+}
+
+
+.voice-record-button.recording{
+  border-color:
+    rgba(198,88,72,0.62);
+
+  background:
+    rgba(174,58,48,0.16);
+
+  color:
+    rgba(255,226,211,0.94);
+}
+
+
+.voice-record-button:disabled{
+  opacity:0.4;
+
+  cursor:not-allowed;
+}
+
+
+#recordStatus{
+  min-height:18px;
+
+  margin-top:8px;
+
+  color:
+    rgba(240,220,190,0.55);
+
+  font-size:11px;
 }
 
 
@@ -1134,28 +1211,46 @@ body{
 
     <div class="media-picker">
 
-      <div class="media-picker-control">
+      <div class="media-picker-actions">
 
-        <input
-          id="mediaInput"
-          type="file"
-          aria-label="添加图片、语音或视频"
-          accept="image/jpeg,image/png,image/webp,image/gif,audio/mpeg,audio/mp4,audio/aac,audio/wav,audio/webm,video/mp4,video/webm"
-          multiple
-        >
+        <div class="media-picker-control">
 
-        <span
-          class="media-picker-button"
-          id="mediaPickerButton"
-          aria-hidden="true"
+          <input
+            id="mediaInput"
+            type="file"
+            aria-label="添加图片、语音或视频"
+            accept="image/jpeg,image/png,image/webp,image/gif,audio/mpeg,audio/mp4,audio/aac,audio/wav,audio/webm,video/mp4,video/webm"
+            multiple
+          >
+
+          <span
+            class="media-picker-button"
+            id="mediaPickerButton"
+            aria-hidden="true"
+          >
+            ＋ 添加图片、语音或视频
+          </span>
+
+        </div>
+
+        <button
+          class="voice-record-button"
+          id="recordButton"
+          type="button"
+          aria-describedby="recordStatus"
         >
-          ＋ 添加图片、语音或视频
-        </span>
+          ● 按住说话
+        </button>
 
       </div>
 
+      <div
+        id="recordStatus"
+        aria-live="polite"
+      ></div>
+
       <div class="media-hint">
-        图片最多6张 · 语音1条 · 视频1个 · 总计不超过40 MB
+        图片最多6张 · 语音1条（录音最长3分钟） · 视频1个 · 总计不超过40 MB
       </div>
 
       <div
@@ -1361,6 +1456,12 @@ const mediaInput =
 const mediaPickerButton =
   document.getElementById("mediaPickerButton");
 
+const recordButton =
+  document.getElementById("recordButton");
+
+const recordStatus =
+  document.getElementById("recordStatus");
+
 const selectedMediaList =
   document.getElementById("selectedMediaList");
 
@@ -1490,11 +1591,31 @@ let currentAttachments = [];
 
 let sending = false;
 
+let recordingPointerActive = false;
+
+let recordingStarting = false;
+
+let activeRecorder = null;
+
+let activeRecordingStream = null;
+
+let recordingChunks = [];
+
+let recordingStartedAt = 0;
+
+let recordingTimer = null;
+
+let recordingLimitTimer = null;
+
 let typingTimer = null;
 
 let finished = false;
 
 let opening = false;
+
+
+const MAX_RECORDING_MS =
+  3 * 60 * 1000;
 
 
 /* 粒子 */
@@ -1871,6 +1992,568 @@ mediaInput.addEventListener(
 );
 
 
+function getRecordingMimeType(){
+
+  if(!window.MediaRecorder){
+    return "";
+  }
+
+
+  const candidates = [
+    "audio/webm;codecs=opus",
+    "audio/webm",
+    "audio/mp4"
+  ];
+
+
+  return candidates.find(
+    type => MediaRecorder.isTypeSupported(type)
+  ) || "";
+
+}
+
+
+const recordingMimeType =
+  getRecordingMimeType();
+
+
+function formatRecordingTime(milliseconds){
+
+  const totalSeconds =
+    Math.max(
+      0,
+      Math.floor(milliseconds / 1000)
+    );
+
+  const minutes =
+    Math.floor(totalSeconds / 60);
+
+  const seconds =
+    String(totalSeconds % 60)
+      .padStart(2, "0");
+
+  return minutes + ":" + seconds;
+
+}
+
+
+function clearRecordingTimers(){
+
+  clearInterval(recordingTimer);
+
+  clearTimeout(recordingLimitTimer);
+
+  recordingTimer = null;
+
+  recordingLimitTimer = null;
+
+}
+
+
+function stopRecordingStream(){
+
+  if(activeRecordingStream){
+
+    activeRecordingStream
+      .getTracks()
+      .forEach(track => track.stop());
+
+  }
+
+
+  activeRecordingStream = null;
+
+}
+
+
+function setRecordingUI(active){
+
+  recordButton.classList.toggle(
+    "recording",
+    active
+  );
+
+  recordButton.textContent =
+    active
+      ? "● 松开结束"
+      : "● 按住说话";
+
+
+  mediaInput.disabled =
+    active || sending;
+
+  mediaPickerButton.classList.toggle(
+    "disabled",
+    active || sending
+  );
+
+  recordButton.disabled =
+    !recordingMimeType ||
+    (!active && sending);
+
+  sendBtn.disabled =
+    active ||
+    sending ||
+    input.value.length === 0;
+
+}
+
+
+function replaceSelectedAudio(file){
+
+  selectedMedia =
+    selectedMedia.filter(
+      function(item){
+
+        if(item.rule.category !== "audio"){
+          return true;
+        }
+
+        if(item.previewURL){
+          URL.revokeObjectURL(item.previewURL);
+        }
+
+        return false;
+
+      }
+    );
+
+
+  addSelectedFiles([file]);
+
+}
+
+
+function finishVoiceRecording(recorder){
+
+  const duration =
+    Date.now() - recordingStartedAt;
+
+  const mimeType =
+    (recorder.mimeType || recordingMimeType)
+      .split(";", 1)[0]
+      .toLowerCase();
+
+  const chunks =
+    recordingChunks.slice();
+
+
+  recordingChunks = [];
+
+  activeRecorder = null;
+
+  clearRecordingTimers();
+
+  stopRecordingStream();
+
+  setRecordingUI(false);
+
+
+  if(duration < 500 || chunks.length === 0){
+    recordStatus.textContent =
+      "录音时间太短，请重新按住说话";
+    return;
+  }
+
+
+  const blob =
+    new Blob(
+      chunks,
+      { type:mimeType }
+    );
+
+
+  if(blob.size <= 0){
+    recordStatus.textContent =
+      "没有录到声音，请重试";
+    return;
+  }
+
+
+  const extension =
+    mimeType === "audio/mp4"
+      ? "m4a"
+      : "webm";
+
+  const file =
+    new File(
+      [blob],
+      "voice-" +
+      Date.now() +
+      "." +
+      extension,
+      {
+        type:mimeType,
+        lastModified:Date.now()
+      }
+    );
+
+
+  replaceSelectedAudio(file);
+
+  recordStatus.textContent =
+    "录音已添加（" +
+    formatRecordingTime(duration) +
+    "），可以寄出或重新录制";
+
+}
+
+
+async function startVoiceRecording(){
+
+  if(
+    sending ||
+    recordingStarting ||
+    activeRecorder
+  ){
+    return;
+  }
+
+
+  if(
+    !recordingMimeType ||
+    !navigator.mediaDevices ||
+    !navigator.mediaDevices.getUserMedia
+  ){
+    recordStatus.textContent =
+      "当前浏览器不支持直接录音，请选择音频文件";
+    return;
+  }
+
+
+  recordingStarting = true;
+
+  setRecordingUI(true);
+
+  recordStatus.textContent =
+    "正在请求麦克风权限…";
+
+
+  try{
+
+    const stream =
+      await navigator.mediaDevices
+        .getUserMedia({
+          video:false,
+          audio:{
+            echoCancellation:true,
+            noiseSuppression:true,
+            autoGainControl:true
+          }
+        });
+
+
+    if(!recordingPointerActive){
+
+      stream
+        .getTracks()
+        .forEach(track => track.stop());
+
+      recordStatus.textContent =
+        "麦克风已启用，请再次按住说话";
+
+      return;
+
+    }
+
+
+    activeRecordingStream = stream;
+
+    recordingChunks = [];
+
+
+    const recorder =
+      new MediaRecorder(
+        stream,
+        { mimeType:recordingMimeType }
+      );
+
+
+    activeRecorder = recorder;
+
+
+    recorder.addEventListener(
+      "dataavailable",
+      function(event){
+
+        if(event.data && event.data.size > 0){
+          recordingChunks.push(event.data);
+        }
+
+      }
+    );
+
+
+    recorder.addEventListener(
+      "stop",
+      function(){
+        finishVoiceRecording(recorder);
+      },
+      { once:true }
+    );
+
+
+    recorder.addEventListener(
+      "error",
+      function(){
+        recordStatus.textContent =
+          "录音失败，请重新尝试";
+      }
+    );
+
+
+    recorder.start(250);
+
+    recordingStartedAt =
+      Date.now();
+
+    recordStatus.textContent =
+      "正在录音 0:00，松开结束";
+
+
+    recordingTimer =
+      setInterval(
+        function(){
+
+          recordStatus.textContent =
+            "正在录音 " +
+            formatRecordingTime(
+              Date.now() - recordingStartedAt
+            ) +
+            "，松开结束";
+
+        },
+        250
+      );
+
+
+    recordingLimitTimer =
+      setTimeout(
+        function(){
+
+          recordingPointerActive = false;
+
+          stopVoiceRecording();
+
+        },
+        MAX_RECORDING_MS
+      );
+
+
+  }catch(error){
+
+    activeRecorder = null;
+
+    recordingChunks = [];
+
+    clearRecordingTimers();
+
+    stopRecordingStream();
+
+
+    recordStatus.textContent =
+      error && error.name === "NotAllowedError"
+        ? "没有麦克风权限，请在浏览器设置中允许后重试"
+        : "无法使用麦克风，请选择音频文件";
+
+  }finally{
+
+    recordingStarting = false;
+
+
+    if(!activeRecorder){
+      setRecordingUI(false);
+    }
+
+  }
+
+}
+
+
+function stopVoiceRecording(){
+
+  recordingPointerActive = false;
+
+
+  if(recordingStarting){
+    return;
+  }
+
+
+  if(
+    activeRecorder &&
+    activeRecorder.state !== "inactive"
+  ){
+    activeRecorder.stop();
+    return;
+  }
+
+
+  clearRecordingTimers();
+
+  stopRecordingStream();
+
+  setRecordingUI(false);
+
+}
+
+
+function handleRecordStart(event){
+
+  if(
+    event.pointerType === "mouse" &&
+    event.button !== 0
+  ){
+    return;
+  }
+
+
+  event.preventDefault();
+
+  recordingPointerActive = true;
+
+
+  if(recordButton.setPointerCapture){
+
+    try{
+      recordButton.setPointerCapture(
+        event.pointerId
+      );
+    }catch(error){}
+
+  }
+
+
+  startVoiceRecording();
+
+}
+
+
+function handleRecordEnd(event){
+
+  event.preventDefault();
+
+  stopVoiceRecording();
+
+}
+
+
+if(window.PointerEvent){
+
+  recordButton.addEventListener(
+    "pointerdown",
+    handleRecordStart
+  );
+
+  recordButton.addEventListener(
+    "pointerup",
+    handleRecordEnd
+  );
+
+  recordButton.addEventListener(
+    "pointercancel",
+    handleRecordEnd
+  );
+
+}
+
+else{
+
+  recordButton.addEventListener(
+    "touchstart",
+    handleRecordStart,
+    { passive:false }
+  );
+
+  recordButton.addEventListener(
+    "touchend",
+    handleRecordEnd,
+    { passive:false }
+  );
+
+  recordButton.addEventListener(
+    "touchcancel",
+    handleRecordEnd,
+    { passive:false }
+  );
+
+  recordButton.addEventListener(
+    "mousedown",
+    handleRecordStart
+  );
+
+  recordButton.addEventListener(
+    "mouseup",
+    handleRecordEnd
+  );
+
+  recordButton.addEventListener(
+    "mouseleave",
+    function(event){
+
+      if(event.buttons > 0){
+        handleRecordEnd(event);
+      }
+
+    }
+  );
+
+}
+
+
+recordButton.addEventListener(
+  "contextmenu",
+  event => event.preventDefault()
+);
+
+
+recordButton.addEventListener(
+  "keydown",
+  function(event){
+
+    if(
+      (event.key === " " || event.key === "Enter") &&
+      !event.repeat
+    ){
+
+      event.preventDefault();
+
+      recordingPointerActive = true;
+
+      startVoiceRecording();
+
+    }
+
+  }
+);
+
+
+recordButton.addEventListener(
+  "keyup",
+  function(event){
+
+    if(event.key === " " || event.key === "Enter"){
+
+      event.preventDefault();
+
+      stopVoiceRecording();
+
+    }
+
+  }
+);
+
+
+if(!recordingMimeType){
+
+  recordButton.disabled = true;
+
+  recordStatus.textContent =
+    "当前浏览器不支持直接录音，可选择音频文件";
+
+}
+
+
 async function uploadSelectedMedia(letterId, uploadToken){
 
   const uploaded = [];
@@ -2127,6 +2810,8 @@ sendBtn.addEventListener(
 
     mediaInput.disabled = true;
 
+    recordButton.disabled = true;
+
     mediaPickerButton.classList.add(
       "disabled"
     );
@@ -2263,6 +2948,9 @@ sendBtn.addEventListener(
     sending = false;
 
     mediaInput.disabled = false;
+
+    recordButton.disabled =
+      !recordingMimeType;
 
     mediaPickerButton.classList.remove(
       "disabled"
@@ -2449,6 +3137,11 @@ againBtn.addEventListener(
 
 
     uploadStatus.textContent = "";
+
+    recordStatus.textContent =
+      recordingMimeType
+        ? ""
+        : "当前浏览器不支持直接录音，可选择音频文件";
 
 
     input.value = "";
